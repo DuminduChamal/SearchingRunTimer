@@ -7,7 +7,6 @@ package sorting;
 
 import java.util.Arrays;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel; 
 import java.util.Random; 
 
 /**
@@ -303,36 +302,56 @@ public class SortingAssignment extends javax.swing.JFrame {
     }//GEN-LAST:event_ValueActionPerformed
 
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
-        int Size=10;
-        int searchElement = -1;
-        //int[] Array = new int[Size];
-        /*Random rand = new Random(); 
-        for(int i=0; i<Array.length; i++)
+        try
         {
-            Array[i]=rand.nextInt(10000);;
-        }*/
-        int Array[]={10,9,8,7,6,5,4,3,2,1};
-        StringBuilder text = new StringBuilder();
-        for(int j=0; j<Array.length ;j++)
-        {
-            text.append(Array[j]);
-            if (j != Array.length - 1) 
-                text.append(",");
+            int Size=10000;
+            flag=0;
+            indexBeforeSort=-1;
+            indexAfterSort=-1;
+            int searchElement = -1;
+            int[] Array = new int[Size];
+            Random rand = new Random(); 
+            for(int i=0; i<Array.length; i++)
+            {
+                Array[i]=rand.nextInt(10000);;
+            }
+            //int Array[]={10,9,8,7,6,5,4,3,2,1};
+            StringBuilder text = new StringBuilder();
+            for(int j=0; j<Array.length ;j++)
+            {
+                text.append(Array[j]);
+                if (j != Array.length - 1) 
+                    text.append(",");
+            }
+            ArrayShow.setText(text.toString());
+            if(Value.getText().equals("")) 
+            {
+                JOptionPane.showMessageDialog(this, "Enter the value of search element", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            else 
+            {
+                searchElement = Integer.parseInt(Value.getText());
+                Value.requestFocusInWindow();
+            }
+            linearSearch(Array,searchElement);
+            jumpSearch(Array,searchElement);
+            BinarySearch(Array,searchElement);
+            InterpolationSearch(Array,searchElement);
+            if(flag==0)
+                JOptionPane.showMessageDialog(this, "Could not find the element in array", "Error", JOptionPane.ERROR_MESSAGE);
+            else
+            {
+                JOptionPane.showMessageDialog(this, "Element found at index(Before sort) :" + indexBeforeSort , "Search Found", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Element found at index(After sort) :" + indexAfterSort , "Search Found" , JOptionPane.INFORMATION_MESSAGE);
+            }
         }
-        ArrayShow.setText(text.toString());
-        if(Value.getText().equals("")) {
-            final JPanel panelSearch = new JPanel();
-            JOptionPane.showMessageDialog(panelSearch, "Enter the value of search element", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+        catch (NumberFormatException z) 
+        { 
+            JOptionPane.showMessageDialog(this, "Incorrect Data Type! Plase Enter A Integer Number!","Input Error", JOptionPane.ERROR_MESSAGE);
+            Value.setText("");
+            Value.requestFocusInWindow();
         }
-        else 
-        {
-            searchElement = Integer.parseInt(Value.getText());
-        }
-        linearSearch(Array,searchElement);
-        jumpSearch(Array,searchElement);
-        BinarySearch(Array,searchElement);
-        InterpolationSearch(Array,searchElement);
     }//GEN-LAST:event_SearchButtonActionPerformed
 
     private void LinearSortRTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LinearSortRTActionPerformed
@@ -354,6 +373,11 @@ public class SortingAssignment extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    
+    int flag=0;
+    int indexBeforeSort=-1;
+    int indexAfterSort=-1;
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -391,20 +415,19 @@ public class SortingAssignment extends javax.swing.JFrame {
 
     public void linearSearch(int Array[],int searchElement)
     { 
-        int flag=0,index=-1;
         long LinearSearchStartTime = System.nanoTime();
         for(int i=0; i<Array.length; i++)
         {
             if(Array[i]==searchElement)
             {
                 flag=1;
-                index=i;
-                JOptionPane.showMessageDialog(null, "Element found at index(without sort) :" + index , "Search Found in Linear Search" , JOptionPane.INFORMATION_MESSAGE);
+                indexBeforeSort=i;
+                //JOptionPane.showMessageDialog(null, "Element found at index(without sort) :" + index , "Search Found in Linear Search" , JOptionPane.INFORMATION_MESSAGE);
                 break;
             }
         }
-        if(flag==0)
-            JOptionPane.showMessageDialog(null, "Could not find the element in array", "Error", JOptionPane.ERROR_MESSAGE);
+        //if(flag==0)
+            //JOptionPane.showMessageDialog(null, "Could not find the element in array", "Error", JOptionPane.ERROR_MESSAGE);
         
         long LinearSearchFinishTime = System.nanoTime();
         long LinearSearchTime = LinearSearchFinishTime - LinearSearchStartTime;
@@ -415,7 +438,7 @@ public class SortingAssignment extends javax.swing.JFrame {
     public void jumpSearch(int Array[],int searchElement)
     { 
         Arrays.sort(Array);
-        int index=0, flag=0;
+        int index=0;
         int blockSize = (int)Math.floor(Math.sqrt(Array.length));
         long jumpSearchStartTime = System.nanoTime();
         while(Array[blockSize-1]<searchElement && blockSize<Array.length)
@@ -423,7 +446,7 @@ public class SortingAssignment extends javax.swing.JFrame {
             index=blockSize-1;
             if(index>=Array.length)
             {
-                JOptionPane.showMessageDialog(null, "Something is wrong", "Error", JOptionPane.ERROR_MESSAGE);
+                //JOptionPane.showMessageDialog(null, "Something is wrong", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             blockSize+=(int)Math.floor(Math.sqrt(Array.length));
@@ -434,14 +457,15 @@ public class SortingAssignment extends javax.swing.JFrame {
         {
             if(Array[index]==searchElement)
             {
+                indexAfterSort=index;
                 flag=1;
-                JOptionPane.showMessageDialog(null, "Element found in jump search at index :" + index , "Search Found" , JOptionPane.INFORMATION_MESSAGE);
+                //JOptionPane.showMessageDialog(null, "Element found in jump search at index :" + index , "Search Found" , JOptionPane.INFORMATION_MESSAGE);
                 break;
             }
             index++;
         }
-        if(flag==0)
-            JOptionPane.showMessageDialog(null, "Could not find the element in array", "Error", JOptionPane.ERROR_MESSAGE);
+        //if(flag==0)
+            //JOptionPane.showMessageDialog(null, "Could not find the element in array", "Error", JOptionPane.ERROR_MESSAGE);
 
         long jumpSearchFinishTime = System.nanoTime();
         long jumpSearchTime = jumpSearchFinishTime - jumpSearchStartTime;
@@ -452,16 +476,15 @@ public class SortingAssignment extends javax.swing.JFrame {
     public void BinarySearch(int Array[],int searchElement)
     { 
         Arrays.sort(Array);
-        int flag=0;
         long BinarySearchStartTime = System.nanoTime();
-        int start = 0, finish=Array.length-1,index=-1;
+        int start = 0, finish=Array.length-1;
         while(start<=finish && searchElement<=Array[finish] && searchElement>=Array[start])
         {
             int middle = start+((finish-start)/2);
             if(Array[middle]==searchElement)
             {
-                index=middle;
-                JOptionPane.showMessageDialog(null, "Element found in binary search at index(after sort) :" + index , "Search Found" , JOptionPane.INFORMATION_MESSAGE);
+                indexAfterSort=middle;
+                //JOptionPane.showMessageDialog(null, "Element found in binary search at index(after sort) :" + index , "Search Found" , JOptionPane.INFORMATION_MESSAGE);
                 flag=1;
                 break;
             }
@@ -470,8 +493,8 @@ public class SortingAssignment extends javax.swing.JFrame {
             else 
                 start=middle+1;
         }
-        if(flag==0)
-            JOptionPane.showMessageDialog(null, "Could not find the element in array", "Error", JOptionPane.ERROR_MESSAGE);
+        //if(flag==0)
+            //JOptionPane.showMessageDialog(null, "Could not find the element in array", "Error", JOptionPane.ERROR_MESSAGE);
         
         long BinarySearchFinishTime = System.nanoTime();
         long BinarySearchTime = BinarySearchFinishTime - BinarySearchStartTime;
@@ -483,14 +506,15 @@ public class SortingAssignment extends javax.swing.JFrame {
     { 
         Arrays.sort(Array);
         long InterpolationSearchStartTime = System.nanoTime();
-        int flag = 0, start = 0, finish=Array.length-1;
+        int start = 0, finish=Array.length-1;
         while(start<=finish && searchElement<=Array[finish] && searchElement>=Array[start])
         {
             int position = (int) (start+(((double)(finish-start)/(Array[finish]-Array[start]))*(searchElement-Array[start])));
             if(Array[position]==searchElement)
             {
                 flag=1;
-                JOptionPane.showMessageDialog(null, "Element found in interpolation at index(without sort) :" + position , "Search Found in Linear Search" , JOptionPane.INFORMATION_MESSAGE);
+                indexAfterSort=position;
+          //      JOptionPane.showMessageDialog(null, "Element found in interpolation at index(after sort) :" + position , "Search Found in Linear Search" , JOptionPane.INFORMATION_MESSAGE);
                 break;
             }
             else if (searchElement>Array[position])
@@ -498,10 +522,10 @@ public class SortingAssignment extends javax.swing.JFrame {
             else
                 finish=position-1;
         }
-        if(flag==0)
-        {
-            JOptionPane.showMessageDialog(null, "Could not find the element in array", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        if(flag==0)
+//        {
+//            JOptionPane.showMessageDialog(null, "Could not find the element in array", "Error", JOptionPane.ERROR_MESSAGE);
+//        }
         long InterpolationSearchFinishTime = System.nanoTime();
         long InterpolationSearchTime = InterpolationSearchFinishTime - InterpolationSearchStartTime;
         String InterpolationSearchTimeStr = Long.toString(InterpolationSearchTime);
